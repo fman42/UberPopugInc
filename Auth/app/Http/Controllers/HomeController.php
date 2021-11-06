@@ -48,7 +48,7 @@ class HomeController extends Controller
     public function deleteUser(Request $request)
     {
         $user = User::find($request->user_id);
-        $this->producer->makeEvent('Deleted', [
+        $this->producer->makeEvent('AccountsStream', 'Deleted', [
             'public_id' => $user->id
         ]);
 
@@ -62,7 +62,8 @@ class HomeController extends Controller
         $user->role_id = $request->role_id;
         $user->save();
 
-        $this->producer->makeEvent('Updated', [
+        $this->producer->makeEvent('AccountsStream', 'Updated', [
+            'public_id' => $user->id, 
             'user' => $user
         ]);
 

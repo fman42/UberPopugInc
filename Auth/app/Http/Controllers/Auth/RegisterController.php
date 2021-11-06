@@ -75,7 +75,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     
-        $this->producer->makeEvent('Created', [
+        $this->producer->makeEvent('AccountsStream', 'Created', [
             'user' => $user
         ]);
 
