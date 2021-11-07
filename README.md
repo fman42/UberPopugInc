@@ -10,9 +10,9 @@
 
 **TaskTracker-сервис** является и консьюером, и продюсером
 
-От него исходит [1-CUD событие](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Http/Controllers/TaskController.php) - строка 30
+От него исходит [1-CUD событие](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Http/Controllers/TaskController.php) - строка 29
 
-И помимо [2 бизнесс-события](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Http/Controllers/TaskController.php) - строка 41 и 52
+И помимо [2 бизнесс-события](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Http/Controllers/TaskController.php) - строка 34, 41 и 52
 
 Консьюмит сообщения [здесь](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Jobs/Consumer.php)
 
