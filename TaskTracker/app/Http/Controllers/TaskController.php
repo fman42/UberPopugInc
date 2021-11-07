@@ -25,10 +25,14 @@ class TaskController extends Controller
     public function CreateTask(Request $request)
     {
         $data = $request->all();
-        $data['assigned_user_id'] = User::inRandomOrder()->first()->id;
         $task = Task::create($data);
         $this->producer->makeEvent('TaskStream', 'Created', $task);
         
+        $task->assigned_user_id = User::inRandomOrder()->first()->id;
+        $task->save();
+
+        $this->producer->makeEvent('TaskStream', 'Assigned', $task);
+
         return redirect()->back();
     }
     
