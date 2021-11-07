@@ -18,6 +18,8 @@ class User extends Authenticatable
         0 => 'admin'
     ];
 
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *

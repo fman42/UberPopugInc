@@ -56,8 +56,8 @@ class Consumer implements ShouldQueue
                 }
                 case 'AccountsStream.Updated': {
                     \App\Models\User::where('id', $json->payload->public_id)->update([
-                        'role_id' => $json->payload->user->role_id
-                    ])->delete();
+                        'role' => $json->payload->user->role_id
+                    ]);
                     break;
                 }
             }
@@ -66,7 +66,6 @@ class Consumer implements ShouldQueue
         };
         
         $channel->basic_consume('AccountsStream', '', false, true, false, false, $accountsStream);
-        
         while ($channel->is_open()) {
             $channel->wait();
         }
