@@ -32,7 +32,7 @@ class Consumer implements ShouldQueue
      */
     public function handle()
     {
-        $connection = new AMQPStreamConnection('cow.rmq2.cloudamqp.com', 5672, 'qrwsbgvf', 'AxvwwkqMp52baIbZ_wcE8Tan2TOyN2Jy', 'qrwsbgvf');
+        $connection = new AMQPStreamConnection('cow.rmq2.cloudamqp.com', 5672, 'qrwsbgvf', config('app.rabbitmq.password'), 'qrwsbgvf');
         $channel = $connection->channel();
 
         $channel->queue_declare('AccountsStream', false, false, false, false);

@@ -12,7 +12,7 @@ class RabbitMQProducer extends Producer
 
     public function __construct()
     {
-        $this->connection = new AMQPStreamConnection('cow.rmq2.cloudamqp.com', 5672, 'qrwsbgvf', 'AxvwwkqMp52baIbZ_wcE8Tan2TOyN2Jy', 'qrwsbgvf');
+        $this->connection = new AMQPStreamConnection('cow.rmq2.cloudamqp.com', 5672, 'qrwsbgvf', config('app.rabbitmq.password'), 'qrwsbgvf');
         $this->channel = $this->connection->channel();
     }
 

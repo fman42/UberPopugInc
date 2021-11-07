@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\User;
-use App\Providers\ProducerEvent;
 use App\Services\ProduceEvent\Producer;
 use Session;
 

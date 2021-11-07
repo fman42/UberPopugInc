@@ -231,4 +231,7 @@ return [
 
     ],
 
+    'rabbitmq' => [
+        'password' => env('RABBITMQ_PASSWORD')
+    ]
 ];
