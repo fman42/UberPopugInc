@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\User;
 use App\Services\ProduceEvent\Producer;
 use Session;
+use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
 
 class TaskController extends Controller
 {
@@ -26,23 +27,52 @@ class TaskController extends Controller
     {
         $data = $request->all();
         $task = Task::create($data);
-        $this->producer->makeEvent('TaskStream', 'Created', $task);
-        
-        $task->assigned_user_id = User::inRandomOrder()->first()->id;
-        $task->save();
+        $event = [
+            'id' => $task->id,
+            'description' => $task->description,
+            'completed' => false
+        ];
 
-        $this->producer->makeEvent('TaskStream', 'Assigned', $task);
-
+        if (ValidatorSchemaRegistry::check($event, 'TaskTracker', 'TaskCreated')) {
+            $this->producer->makeEvent('TaskStream', 'Created', $event);
+            $this->assignTask($task); 
+        } else {
+            \Log::error('Произошла ошибка при создании новой задачи');
+        }
+    
         return redirect()->back();
     }
     
+    public function assignTask(Task $task)
+    {
+        $task->assigned_user_id = User::inRandomOrder()->first()->id;
+        $task->save();
+
+        $event = [
+            'id' => $task->id,
+            'assigned_user_id' => $task->assigned_user_id
+        ];
+
+        if (ValidatorSchemaRegistry::check($event, 'TaskTracker', 'TaskAssigned')) {
+            $this->producer->makeEvent('TaskStream', 'Assigned', $event);
+        } else {
+            \Log::error('Произошла ошибка при ассайни задачи');
+        }
+    }
+
     public function CompleteTask($task_id)
     {
         $task = Task::find($task_id);
         $task->completed = 1;
         $task->save();
 
-        $this->producer->makeEvent('Task', 'Completed', $task);
+        $event = ['id' => $task->id];
+        if (ValidatorSchemaRegistry::check($event, 'TaskTracker', 'TaskCompleted')) {
+            $this->producer->makeEvent('Task', 'Completed', $event);
+        } else {
+            \Log::error('Произошла ошибка при завершении задачи');
+        }
+
         return redirect()->back();
     }
 
@@ -53,7 +83,7 @@ class TaskController extends Controller
             $task->assigned_user_id = User::inRandomOrder()->first()->id;
             $task->save();
 
-            $this->producer->makeEvent('Task', 'Assigned', $task);
+            $this->assignTask($task);
         }
 
         return redirect()->back();
