@@ -50,6 +50,6 @@ class User extends Authenticatable
 
     public function getRoleIdAttribute()
     {
-        return $this->roles[$this->attributes['role_id']] ?? $this->roles[0];
+        return $this->roles[$this->attributes['role_id'] ?? 0];
     }
 }

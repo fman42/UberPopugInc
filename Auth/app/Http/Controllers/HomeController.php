@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\ProduceEvent\Producer;
@@ -48,11 +49,17 @@ class HomeController extends Controller
     public function deleteUser(Request $request)
     {
         $user = User::find($request->user_id);
-        $this->producer->makeEvent('AccountsStream', 'Deleted', [
-            'public_id' => $user->id
-        ]);
+        $event = [
+            'public_user_id' => $user->id
+        ];
 
-        $user->delete();
+        if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountDeleted')) {
+            $this->producer->makeEvent('AccountsStream', 'Deleted', $event);
+            $user->delete();
+        } else {
+            \Log::error('Ошибка при отправке события AccountDeleted');
+        }
+
         return redirect()->back();
     }
 
@@ -60,12 +67,20 @@ class HomeController extends Controller
     {
         $user = User::find($id);
         $user->role_id = $request->role_id;
-        $user->save();
 
-        $this->producer->makeEvent('AccountsStream', 'Updated', [
-            'public_id' => $user->id, 
-            'user' => $user
-        ]);
+        $event = [
+            'public_user_id' => $user->id,
+            'role' => $user->role_id,
+            'name' => $user->name,
+            'email' => $user->email
+        ];
+
+        if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountUpdated')) {
+            $this->producer->makeEvent('AccountsStream', 'Updated', $event);
+            $user->save();
+        } else {
+            \Log::error('Ошибка при обновлении пользователя');
+        }
 
         return redirect()->back();
     }

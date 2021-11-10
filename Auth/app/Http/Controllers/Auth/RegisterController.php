@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
@@ -75,9 +76,18 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     
-        $this->producer->makeEvent('AccountsStream', 'Created', [
-            'user' => $user
-        ]);
+        $event = [
+            'id' => $user->id,
+            'role' => $user->role_id,
+            'name' => $user->name,
+            'email' => $user->email
+        ];
+
+        if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountCreated')) {
+            $this->producer->makeEvent('AccountsStream', 'Created', $event);    
+        } else {
+            \Log::error('Ошибка при регистрации');
+        }
 
         return $user;
     }
