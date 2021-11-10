@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
 
 class Consumer implements ShouldQueue
 {
@@ -39,9 +40,14 @@ class Consumer implements ShouldQueue
 
         $accountsStream = function ($msg) {
             $json = json_decode($msg->body);
+            $event = json_decode($msg->body, true);
 
             switch ($json->event) {
                 case 'AccountsStream.Created': {
+                    if (!ValidatorSchemaRegistry::check($event, 'Auth', 'AccountCreated')) {
+                        break;
+                    }
+
                     \App\Models\User::insert([
                         'id' => $json->payload->user->id,
                         'name' => $json->payload->user->name,
@@ -51,10 +57,16 @@ class Consumer implements ShouldQueue
                     break;
                 }
                 case 'AccountsStream.Deleted': {
+                    if (!ValidatorSchemaRegistry::check($event, 'Auth', 'AccountDeleted')) {
+                        break;
+                    }
                     \App\Models\User::where('id', $json->payload->public_id)->delete();
                     break;
                 }
                 case 'AccountsStream.Updated': {
+                    if (!ValidatorSchemaRegistry::check($event, 'Auth', 'AccountUpdated')) {
+                        break;
+                    }
                     \App\Models\User::where('id', $json->payload->public_id)->update([
                         'role' => $json->payload->user->role_id
                     ]);
@@ -65,7 +77,7 @@ class Consumer implements ShouldQueue
             \Log::info(['text' => ' [x] Received '. $msg->body. "\n"]);
         };
         
-        $channel->basic_consume('AccountsStream', '', false, true, false, false, $accountsStream);
+        $channel->basic_consume('AccountsStream', '', false, false, false, false, $accountsStream);
         while ($channel->is_open()) {
             $channel->wait();
         }
