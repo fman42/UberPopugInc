@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    $data = (object) [
+        'id' => 313,
+    ];
+    dd(ValidatorSchemaRegistry::check($data, 'Auth', 'AccountCreated'));
+    exit();
+
     return view('welcome');
 });
 
