@@ -1,0 +1,3 @@
+[submodule "Auth/storage/app/UberPopugIncSchema"]
+	path = Auth/storage/app/UberPopugIncSchema
+	url = https://github.com/fman42/UberPopugIncSchema.git

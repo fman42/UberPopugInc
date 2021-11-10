@@ -17,12 +17,6 @@ use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
 */
 
 Route::get('/', function () {
-    $data = (object) [
-        'id' => 313,
-    ];
-    dd(ValidatorSchemaRegistry::check($data, 'Auth', 'AccountCreated'));
-    exit();
-
     return view('welcome');
 });
 
