@@ -90,7 +90,7 @@ class TaskController extends Controller
     {
         $user_id = Session::get('user_session')['public_user_id'];
         return view('dashboard', [
-            'tasks' => Task::where('assigned_user_id', $user_id)->noCompleted()->get()
+            'tasks' => Task::where('assigned_user_id', $user_id)->get()
         ]);
     }
 }
