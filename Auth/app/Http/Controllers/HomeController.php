@@ -51,7 +51,7 @@ class HomeController extends Controller
             $this->producer->makeEvent('AccountsStream', 'Deleted', $event);
             $user->delete();
         } else {
-            \Log::error('Ошибка при отправке события AccountDeleted');
+            $this->throwEventException('AccountDeleted');
         }
 
         return redirect()->back();
@@ -73,7 +73,7 @@ class HomeController extends Controller
             $this->producer->makeEvent('AccountsStream', 'Updated', $event);
             $user->save();
         } else {
-            \Log::error('Ошибка при обновлении пользователя');
+            $this->throwEventException('AccountUpdated');
         }
 
         return redirect()->back();
