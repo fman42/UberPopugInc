@@ -12,12 +12,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    private $roles = [
-        2 => 'employee',
-        1 => 'manager',
-        0 => 'admin'
-    ];
-
     public $timestamps = false;
 
     /**
@@ -49,9 +43,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function getRoleIdAttribute()
-    {
-        return $this->roles[$this->attributes['role_id']] ?? $this->roles[0];
-    }
 }
