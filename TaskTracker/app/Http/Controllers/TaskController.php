@@ -37,7 +37,7 @@ class TaskController extends Controller
             $this->producer->makeEvent('TaskStream', 'Created', $event);
             $this->assignTask($task); 
         } else {
-            \Log::error('Произошла ошибка при создании новой задачи');
+            $this->throwEventException('TaskCreated');
         }
     
         return redirect()->back();
@@ -56,7 +56,7 @@ class TaskController extends Controller
         if (ValidatorSchemaRegistry::check($event, 'TaskTracker', 'TaskAssigned')) {
             $this->producer->makeEvent('TaskStream', 'Assigned', $event);
         } else {
-            \Log::error('Произошла ошибка при ассайни задачи');
+            $this->throwEventException('TaskAssigned');
         }
     }
 
@@ -70,7 +70,7 @@ class TaskController extends Controller
         if (ValidatorSchemaRegistry::check($event, 'TaskTracker', 'TaskCompleted')) {
             $this->producer->makeEvent('Task', 'Completed', $event);
         } else {
-            \Log::error('Произошла ошибка при завершении задачи');
+            $this->throwEventException('TaskCompleted');
         }
 
         return redirect()->back();
@@ -78,11 +78,8 @@ class TaskController extends Controller
 
     public function ReassignTasks()
     {
-        $open_tasks = Task::where('completed', 0)->get();
+        $open_tasks = Task::query()->noComplete();
         foreach ($open_tasks as $task) {
-            $task->assigned_user_id = User::inRandomOrder()->first()->id;
-            $task->save();
-
             $this->assignTask($task);
         }
 
@@ -93,7 +90,7 @@ class TaskController extends Controller
     {
         $user_id = Session::get('user_session')['public_user_id'];
         return view('dashboard', [
-            'tasks' => Task::where('completed', 0)->where('assigned_user_id', $user_id)->get()
+            'tasks' => Task::where('assigned_user_id', $user_id)->noCompleted()->get()
         ]);
     }
 }
