@@ -30,6 +30,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $s = User::first()->createToken('rabotai');
+        dd($s);
+        exit();
         $usersCollection = Auth::user()->role === 'admin' ? User::get()->toArray() : [];
         return view('home', compact("usersCollection"));
     }

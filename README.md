@@ -1,20 +1,7 @@
-# 2 неделя
+# 3 неделя
 
-Привет! При реализации выбрал концепцию очереди событий, а реализацию - **RabbitMQ**. Хотел поработать, но вот никак не доходило до этого. В следующих **pet-project** обязательно попробую Kafka и лог сообщений
+Привет! На данный момент реализовал Schema Registry для текущих микросервисов, [глянуть можно тут](https://github.com/fman42/UberPopugIncSchema)
 
-К сожалению, ТЗ на это ДЗ я до конца еще не успел реализовать из-за исключительно проблемы с OAuth, решил взять этот подход для практики и пока курю почему оно не пашет как надо.
+Реализовал сервис биллинга. Сделал изменения в UI(требования про статус задачи). Мне остается доделать аналитику, довести до ума биллинг и это все по идеи. Пока не вникал даже в обработку ошибок.
 
-На данный момент мои два сервиса общаются, от **Auth-сервиса** исходит 3 CUD-события:
-- [Удаление/обновление](https://github.com/fman42/UberPopugInc/blob/main/Auth/app/Http/Controllers/HomeController.php) 
-- [Создание пользователя](https://github.com/fman42/UberPopugInc/blob/main/Auth/app/Http/Controllers/Auth/RegisterController.php) - 78 строка
-
-**TaskTracker-сервис** является и консьюером, и продюсером
-
-От него исходит [1-CUD событие](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Http/Controllers/TaskController.php) - строка 29
-
-И помимо [2 бизнесс-события](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Http/Controllers/TaskController.php) - строка 34, 41 и 52
-
-Консьюмит сообщения [здесь](https://github.com/fman42/UberPopugInc/blob/main/TaskTracker/app/Jobs/Consumer.php)
-
-
-https://www.cloudamqp.com/ дает бесплатные ресурсы для разработчиков, так что я RabbitMQ оставил в облаке(если это нарушение ДЗ, то разверну локально)
+Возник вопрос небольшой: обязательно ли нам выставлять цену именно при business event TaskAdded ? Нельзя ли это сделать для CUD-события? Task.Created, как пример. И хочу узнать, засчитается мне эта неделя в график? Нужно еще день-два на доработку и я тэгну повторно

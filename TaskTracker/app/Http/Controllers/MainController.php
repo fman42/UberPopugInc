@@ -14,7 +14,7 @@ class MainController extends Controller
             'client_id' => config('auth.oauth_key'),
             'redirect_uri' => config('app.url').'/callback',
             'response_type' => 'code',
-            'scope' => '',
+            'scope' => '*',
         ]);
 
         return redirect(config('auth.url').'/oauth/authorize?'.$query);
@@ -31,6 +31,7 @@ class MainController extends Controller
         ]);
 
         $response = $request->json();
+        dd($response);
         Session::put('user_session', $response);
 
         return redirect('/');
