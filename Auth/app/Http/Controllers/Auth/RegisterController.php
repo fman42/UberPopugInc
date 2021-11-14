@@ -77,8 +77,8 @@ class RegisterController extends Controller
         ]);
     
         $event = [
-            'id' => $user->id,
-            'role' => $user->role_id,
+            'public_id' => $user->id,
+            'role' => $user->role,
             'name' => $user->name,
             'email' => $user->email
         ];
@@ -86,7 +86,7 @@ class RegisterController extends Controller
         if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountCreated')) {
             $this->producer->makeEvent('AccountsStream', 'Created', $event);    
         } else {
-            \Log::error('Ошибка при регистрации');
+            $this->throwEventException('AccountCreated');
         }
 
         return $user;

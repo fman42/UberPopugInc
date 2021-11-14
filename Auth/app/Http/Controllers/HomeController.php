@@ -30,34 +30,28 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $usersCollection = [];
-        if (Auth::user()->role_id == 'admin') {
-            $usersCollection = User::get();
-        }
-
-        return view('home', [
-            'usersCollection' => $usersCollection
-        ]);
+        $usersCollection = Auth::user()->role === 'admin' ? User::get()->toArray() : [];
+        return view('home', compact("usersCollection"));
     }
 
     public function getUser($id)
     {
         $user = User::find($id);
-        return $user === null ? abort(404) : view('users.edit', ['user' => $user]);
+        return $user === null ? abort(404) : view('users.edit', compact("user"));
     }
 
     public function deleteUser(Request $request)
     {
         $user = User::find($request->user_id);
         $event = [
-            'public_user_id' => $user->id
+            'public_id' => $user->id
         ];
 
         if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountDeleted')) {
             $this->producer->makeEvent('AccountsStream', 'Deleted', $event);
             $user->delete();
         } else {
-            \Log::error('Ошибка при отправке события AccountDeleted');
+            $this->throwEventException('AccountDeleted');
         }
 
         return redirect()->back();
@@ -66,11 +60,11 @@ class HomeController extends Controller
     public function updateRoleUser($id, Request $request)
     {
         $user = User::find($id);
-        $user->role_id = $request->role_id;
+        $user->role = $request->role;
 
         $event = [
-            'public_user_id' => $user->id,
-            'role' => $user->role_id,
+            'public_id' => $user->id,
+            'role' => $user->role,
             'name' => $user->name,
             'email' => $user->email
         ];
@@ -79,7 +73,7 @@ class HomeController extends Controller
             $this->producer->makeEvent('AccountsStream', 'Updated', $event);
             $user->save();
         } else {
-            \Log::error('Ошибка при обновлении пользователя');
+            $this->throwEventException('AccountUpdated');
         }
 
         return redirect()->back();

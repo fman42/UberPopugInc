@@ -14,4 +14,9 @@ class Task extends Model
         'completed',
         'assigned_user_id'
     ];
+
+    public function scopeNoCompleted($q)
+    {
+        return $q->where('completed', 0);
+    }
 }

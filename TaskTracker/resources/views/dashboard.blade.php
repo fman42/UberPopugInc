@@ -8,6 +8,7 @@
             <div class="card">
                 <div class="card-body">
                     <p>Описание: {{ $task->description }}</p>
+                    <p>Статус задачи: <strong>{{ $task->completed ? 'просо в миске' : 'птичка в клетке' }}</strong></p>
                     @if (!$task->completed)
                         <form method="POST" action="{{ route('task.complete', $task->id) }}">
                             <button class="btn btn-success">Завершить</button>

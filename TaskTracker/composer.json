@@ -13,8 +13,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
-        "php-amqplib/php-amqplib": "^3.1",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "^11.3"
+        "php-amqplib/php-amqplib": "^3.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
