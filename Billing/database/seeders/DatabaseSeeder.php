@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory()->count(20)->create()->each(function ($user) {
             $user->credits()->saveMany(\App\Models\Credit::factory()->count(5)->make());
             $user->debits()->saveMany(\App\Models\Debit::factory()->count(5)->make());
+            $user->tasks()->saveMany(\App\Models\Task::factory()->count(10)->make());
         });
     }
 }
