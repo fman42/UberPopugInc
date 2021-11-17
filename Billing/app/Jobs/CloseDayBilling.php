@@ -3,12 +3,11 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\{User, Credit, Debit, Audit};
+use App\Models\{Credit, Debit};
 use Carbon\Carbon;
 
 class CloseDayBilling implements ShouldQueue
@@ -23,9 +22,12 @@ class CloseDayBilling implements ShouldQueue
 
     private $date;
 
-    public function __construct()
+    private $user_id;
+
+    public function __construct(?string $date, int $user_id)
     {
-        $this->date = Carbon::now()->format('Y-m-d');
+        $this->date = $date === null ? Carbon::now()->format('Y-m-d') : Carbon::parse($date)->format('Y-m-d');
+        $this->user_id = $user_id;
     }
 
     /**
@@ -35,20 +37,30 @@ class CloseDayBilling implements ShouldQueue
      */
     public function handle()
     {
-        foreach (User::get() as $user)
-        {
-            $credit = Credit::whereDate('created_at', '=', $this->date);
-            $debit = Debit::whereDate('created_at', '=', $this->date);
-            $balance = Debit::whereDate('created_at', '=', $this->date)->sum('ammount') - Credit::whereDate('created_at', '=', $this->date)->sum('ammount');
+        $creditQuery = Credit::where([
+            'user_id' => $this->user_id,
+        ])->whereDate('created_at', '=', $this->date);
 
-            // send to email
+        $debitQuery = Debit::where([
+            'user_id' => $this->user_id,
+        ])->whereDate('created_at', '=', $this->date);
 
-            $credit->update(['closed' => 1]);
-            $debit->update(['closed' => 1]);
-            Audit::create([
-                'user_id' => $credit->first()->user_id,
-                'body' => 'Выплачена сумма по окончанию дня - '.$balance
-            ]);
-        }
+        $currentWithdrawn = $debitQuery->sum('ammount') - $creditQuery->sum('ammount');
+        $creditQuery->update(['closed' => 1]);
+        $debitQuery->update(['closed' => 1]);
+        // send to email
+        
+        $this->sendEvent($currentWithdrawn);
+    }
+
+    private function sendEvent(int $ammount)
+    {
+        $eventSchema = [
+            'user_id' => $this->user_id,
+            'ammount' => $ammount
+        ];
+
+        // Check schema registry
+        $this->producer->makeEvent('Billing', 'ClosedDayBilling', $eventSchema);
     }
 }
