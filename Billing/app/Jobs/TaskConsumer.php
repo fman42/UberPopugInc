@@ -8,27 +8,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\{Credit, Debit, Task, Audit};
+use App\ConsumerAction\{TaskAssigned, TaskCompleted, TaskCreated};
 
 class TaskConsumer implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
         $event = [];
@@ -37,29 +22,17 @@ class TaskConsumer implements ShouldQueue
         {
             case 'TaskStream.Created':
             {
-                Task::create($event);
+                (new TaskCreated($event))->handle();
                 break;
             }
             case 'Task.Assigned':
-            {
-                $event = [
-                    'user_id' => $event->assigned_user_id,
-                    'fee' => mt_rand(-10, -20)
-                ];
-                Credit::make($event->assigned_user_id, $event['fee']);
-                Audit::log('Был создан расход на сумму '.$event['fee']);
-                $this->producer->makeEvent($event);
+            {   
+                (new TaskAssigned((int) $event['task_id']))->handle();
                 break;
             }
             case 'Task.Completed':
             {
-                $event = [
-                    'user_id' => $event->assigned_user_id,
-                    'fee' => mt_rand(20, 40)
-                ];
-                Debit::make($event->assigned_user_id, $event['fee']);
-                Audit::log('Был создан дебит на сумму '.$event['fee']); 
-                $this->producer->makeEvent($event);
+                (new TaskCompleted((int) $event['task_id']))->handle();
                 break;
             }
         }
