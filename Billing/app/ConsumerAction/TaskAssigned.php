@@ -3,6 +3,7 @@
 namespace App\ConsumerAction;
 
 use App\Models\{Task, Credit, Audit};
+use App\Jobs\RecalcBalance;
 
 class TaskAssigned implements IConsumerAction
 {
@@ -25,6 +26,7 @@ class TaskAssigned implements IConsumerAction
 
         if ($credit = Credit::make($this->task->user_id, $this->task->fee)) {
             Audit::log('Был создан расход на сумму '.$credit->fee);
+            event(new RecalcBalance($credit->user_id));
         }
 
         return $credit != null;

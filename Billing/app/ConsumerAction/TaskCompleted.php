@@ -3,6 +3,7 @@
 namespace App\ConsumerAction;
 
 use App\Models\{Task, Debit, Audit};
+use App\Jobs\RecalcBalance;
 
 class TaskCompleted implements IConsumerAction
 {
@@ -25,6 +26,7 @@ class TaskCompleted implements IConsumerAction
 
         if ($debit = Debit::make($this->task->user_id, $this->task->fee)) {
             Audit::log('Был создан дебит на сумму '.$debit->fee);
+            event(new RecalcBalance($credit->user_id));
         }
 
         return $debit != null;
