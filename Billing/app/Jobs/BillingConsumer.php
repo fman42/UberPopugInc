@@ -31,11 +31,13 @@ class BillingConsumer implements ShouldQueue
      */
     public function handle()
     {
-        switch ($eventName)
+        $event = [];
+        switch ($event['name'])
         {
             case 'ClosedWorkSession':
             {
-                
+                (new MakeCloseWorkDayAudit($event['user_id'], $event['ammount']))->handle();
+                (new SendEmployeeCloseWorkDayAlert($event['user_id']))->handle();
             }
         }
     }

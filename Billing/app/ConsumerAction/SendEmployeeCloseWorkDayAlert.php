@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Mail\ClosedWorkSession;
 use Illuminate\Support\Facades\Mail;
 
-class MakeCloseWorkDayAudit implements IConsumerAction
+class SendEmployeeCloseWorkDayAlert implements IConsumerAction
 {
     private $user;
 
@@ -21,7 +21,7 @@ class MakeCloseWorkDayAudit implements IConsumerAction
     public function handle() : bool
     {
         Mail::to($this->user->email)->queue(new ClosedWorkSession());
-        
+
         return true;
     }
 }
