@@ -10,7 +10,7 @@ class AccountUpdated implements IConsumerAction
 
     private $data;
 
-    public function __construct(string $user_id, string $eventData)
+    public function __construct(string $user_id, array $eventData)
     {
         $this->user_id = $user_id;
         $this->data = $eventData;
