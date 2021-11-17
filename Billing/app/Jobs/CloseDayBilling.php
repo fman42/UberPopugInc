@@ -48,7 +48,6 @@ class CloseDayBilling implements ShouldQueue
         $currentWithdrawn = $debitQuery->sum('ammount') - $creditQuery->sum('ammount');
         $creditQuery->update(['closed' => 1]);
         $debitQuery->update(['closed' => 1]);
-        // send to email
         
         $this->sendEvent($currentWithdrawn);
     }
