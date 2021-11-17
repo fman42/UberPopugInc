@@ -13,4 +13,9 @@ class Credit extends Model
     {
         return $q->where('closed', 1);
     }
+
+    public function scopeActive($q)
+    {
+        return $q->where('closed', 0);
+    }
 }
