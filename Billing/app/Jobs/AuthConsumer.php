@@ -8,20 +8,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\ConsumerAction\{AccountCreated, AccountUpdated, AccountDeleted};
 
 class AuthConsumer implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     /**
      * Execute the job.
@@ -30,6 +21,25 @@ class AuthConsumer implements ShouldQueue
      */
     public function handle()
     {
-        //
+        $event = [];
+        $eventName = '';
+        switch ($eventName)
+        {
+            case 'AccountCreated':
+            {
+                (new AccountCreated($event))->handle();
+                break;
+            }
+            case 'AccountDeleted':
+            {
+                (new AccountDeleted($event['user_id']))->handle();
+                break;
+            }
+            case 'AccountUpdated':
+            {
+                (new AccountUpdated($event['user_id'], $event))->handle();
+                break;
+            }
+        }
     }
 }
