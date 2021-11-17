@@ -39,11 +39,11 @@ class CloseDayBilling implements ShouldQueue
     {
         $creditQuery = Credit::where([
             'user_id' => $this->user_id,
-        ])->whereDate('created_at', '=', $this->date);
+        ])->toDay();
 
         $debitQuery = Debit::where([
             'user_id' => $this->user_id,
-        ])->whereDate('created_at', '=', $this->date);
+        ])->toDay();
 
         $currentWithdrawn = $debitQuery->sum('ammount') - $creditQuery->sum('ammount');
         $creditQuery->update(['closed' => 1]);
