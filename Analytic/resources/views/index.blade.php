@@ -14,7 +14,7 @@
         @if ($expensiveTask != null)
             <h2>Самая дорогая задача сегодня:</h2>
             <p>{{ $expensiveTask->name  }}</p>
-        @endforeach
+        @endif
     </div>
 </body>
 </html>
