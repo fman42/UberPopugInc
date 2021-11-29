@@ -78,14 +78,19 @@ class TaskController extends Controller
 
     public function ReassignTasks()
     {
-        $open_tasks = Task::noCompleted()->get();
-        foreach ($open_tasks as $task) {
-            $this->assignTask($task);
-        }
-
-        $this->producer->makeEvent('Task', 'Reassigned', [
+        $event = [
             'made_user_id' => Session::get('user_session')['public_user_id']
-        ]);
+        ];
+        if (ValidatorSchemaRegistry::check($event, 'TaskTracker', 'TasksReassigned')) {
+            $open_tasks = Task::noCompleted()->get();
+            foreach ($open_tasks as $task) {
+                $this->assignTask($task);
+            }
+
+            $this->producer->makeEvent('Task', 'Completed', $event);
+        } else {
+            $this->throwEventException('TasksReassigned');
+        }
 
         return redirect()->back();
     }
