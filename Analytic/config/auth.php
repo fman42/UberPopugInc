@@ -18,6 +18,10 @@ return [
         'passwords' => 'users',
     ],
 
+    'url' => 'http://127.0.0.1:8001',
+    'oauth_key' => '94dfedef-8b92-427c-a2c9-1caa2e509fd5',
+    'oauth_secret' => 'p3p6xjwK8vNMSjW0XKHeBDT3whh95IE94lbZg6dI',
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards
