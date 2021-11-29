@@ -44,7 +44,7 @@
                             <a class="nav-link" href="{{ route('task.create') }}">Создать задачу</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('task.reassigned') }}">Зассайнить задачи</a>
+                            <a class="nav-link" href="{{ route('task.reassigned') }}">Переназначить задачи</a>
                         </li>
                         @guest
                             @if (Route::has('login'))

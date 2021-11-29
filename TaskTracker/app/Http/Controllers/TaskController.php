@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\User;
 use App\Services\ProduceEvent\Producer;
-use Session;
 use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
 
 class TaskController extends Controller
