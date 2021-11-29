@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\TaskController::class, 'GetTask'])->name('dashboard');
+Route::get('/', [App\Http\Controllers\TaskController::class, 'GetTask'])->middleware('auth')->name('dashboard');
 
-Route::prefix('task')->group(function ($route) {
+Route::prefix('task')->middleware('auth')->group(function ($route) {
     $route->get('/create-task', [App\Http\Controllers\TaskController::class, 'CreateTaskView'])->name('task.create');
     $route->post('/create-task', [App\Http\Controllers\TaskController::class, 'CreateTask'])->name('task.create');
     $route->get('/reassigned-task', [App\Http\Controllers\TaskController::class, 'ReassignTasks'])->name('task.reassigned');
