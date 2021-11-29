@@ -78,17 +78,21 @@ class TaskController extends Controller
 
     public function ReassignTasks()
     {
-        $open_tasks = Task::noCompleted();
+        $open_tasks = Task::noCompleted()->get();
         foreach ($open_tasks as $task) {
             $this->assignTask($task);
         }
+
+        $this->producer->makeEvent('Task', 'Reassigned', [
+            'made_user_id' => Session::get('user_session')['public_user_id']
+        ]);
 
         return redirect()->back();
     }
 
     public function GetTask()
     {
-        $user_id = Session::get('user_session')['public_user_id'];
+        $user_id = Session::get('user_session')['public_user_id'] ?? 16;
         return view('dashboard', [
             'tasks' => Task::where('assigned_user_id', $user_id)->noCompleted()->get()
         ]);
