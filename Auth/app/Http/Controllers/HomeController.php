@@ -44,7 +44,7 @@ class HomeController extends Controller
     {
         $user = User::find($request->user_id);
         $event = [
-            'public_id' => $user->id
+            'public_user_id' => $user->id
         ];
 
         if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountDeleted')) {
@@ -63,7 +63,7 @@ class HomeController extends Controller
         $user->role = $request->role;
 
         $event = [
-            'public_id' => $user->id,
+            'public_user_id' => $user->id,
             'role' => $user->role,
             'name' => $user->name,
             'email' => $user->email

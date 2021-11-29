@@ -9,12 +9,12 @@
 
                 <div class="card-body">
                     {{ $user->name }}
-                    <p>Изменить роль: (текущая {{ $user->role_id }})</p>
+                    <p>Изменить роль: (текущая {{ $user->role }})</p>
                     <form method="POST">
-                        <select name="role_id">
-                            <option value="2">Сотрудник</option>
-                            <option value="1">Мененджер</option>
-                            <option value="0">Админ</option>
+                        <select name="role">
+                            <option value="employee">Сотрудник</option>
+                            <option value="manager">Мененджер</option>
+                            <option value="admin">Админ</option>
                             @csrf
                         </select>
                         <button class="btn btn-success">Обновить</button>
