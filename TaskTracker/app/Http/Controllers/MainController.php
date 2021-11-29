@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class MainController extends Controller
 {
@@ -22,18 +24,17 @@ class MainController extends Controller
 
     public function Callback(Request $request)
     {  
-        $request = Http::asForm()->post(config('auth.url').'/oauth/token', [
-            'grant_type' => 'authorization_code',
-            'client_id' => config('auth.oauth_key'),
-            'client_secret' => config('auth.oauth_secret'),
-            'redirect_uri' => config('auth.url').'/callback',
-            'code' => $request->code,
-        ]);
+        $code = '0af3fad0f619494712cb6f676d2b3eb7eb0670e1d61e7db2af825e33492200ca6716ca34e4cdf933';
+        $request = Http::asForm()->get(config('auth.url').'/api/user/'.$code);
+        
+        $user = User::where('p_id', $request['p_id'])->first() ?? new User();
+        $user->name = $request['user']['name'];
+        $user->email = $request['user']['email'];
+        $user->p_id = $request['p_id'];
+        $user->role = $request['user']['role'];
+        $user->save();
 
-        $response = $request->json();
-        dd($response);
-        Session::put('user_session', $response);
-
+        Auth::login($user);
         return redirect('/');
     }
 }

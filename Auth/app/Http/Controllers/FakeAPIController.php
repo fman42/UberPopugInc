@@ -14,6 +14,6 @@ class FakeAPIController extends Controller
             abort(404);
         }
 
-        return User::find($user->id);
+        return response()->json(['user' => User::find($user->user_id), 'p_id' => $user->id]);
     }
 }
