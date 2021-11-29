@@ -40,25 +40,17 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('task.create') }}">Создать задачу</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('task.reassigned') }}">Переназначить задачи</a>
-                        </li>
                         @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('login') }}">Войти</a>
+                            </li>
                         @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('task.create') }}">Создать задачу</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('task.reassigned') }}">Переназначить задачи</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}

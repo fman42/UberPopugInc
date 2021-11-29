@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,5 +23,5 @@ Route::prefix('task')->group(function ($route) {
     $route->post('/complete/{id}', [App\Http\Controllers\TaskController::class, 'CompleteTask'])->name('task.complete');
 });
 
-Route::get('/auth/redirect', [App\Http\Controllers\MainController::class, 'GetRedirectAuthLink'])->name('home');
+Route::get('/auth/redirect', [App\Http\Controllers\MainController::class, 'GetRedirectAuthLink'])->name('login');
 Route::get('/callback', [App\Http\Controllers\MainController::class, 'Callback'])->name('callback');

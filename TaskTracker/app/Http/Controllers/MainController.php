@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Session;
 
 class MainController extends Controller
 {
