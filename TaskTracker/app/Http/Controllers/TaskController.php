@@ -54,7 +54,7 @@ class TaskController extends Controller
         ];
 
         if (ValidatorSchemaRegistry::check($event, 'TaskTracker', 'TaskAssigned')) {
-            $this->producer->makeEvent('TaskStream', 'Assigned', $event);
+            $this->producer->makeEvent('Task', 'Assigned', $event);
         } else {
             $this->throwEventException('TaskAssigned');
         }
@@ -78,7 +78,7 @@ class TaskController extends Controller
 
     public function ReassignTasks()
     {
-        $open_tasks = Task::query()->noComplete();
+        $open_tasks = Task::noCompleted();
         foreach ($open_tasks as $task) {
             $this->assignTask($task);
         }
