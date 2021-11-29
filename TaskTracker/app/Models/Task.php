@@ -19,4 +19,9 @@ class Task extends Model
     {
         return $q->where('completed', 0);
     }
+
+    public function scopeCompleted($q)
+    {
+        return $q->where('completed', 1);
+    }
 }
