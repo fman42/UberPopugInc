@@ -1,0 +1,17 @@
+{
+    "name": "root/yqm",
+    "autoload": {
+        "psr-4": {
+            "Root\\Yqm\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "fman42",
+            "email": "igrok5554545@gmail.com"
+        }
+    ],
+    "require": {
+        "spomky-labs/jose": "^7.1"
+    }
+}

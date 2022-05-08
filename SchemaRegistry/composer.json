@@ -1,0 +1,17 @@
+{
+    "name": "root/schema-registry",
+    "autoload": {
+        "psr-4": {
+            "Root\\SchemaRegistry\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "fman42",
+            "email": "igrok5554545@gmail.com"
+        }
+    ],
+    "require": {
+        "justinrainbow/json-schema": "^5.2"
+    }
+}
