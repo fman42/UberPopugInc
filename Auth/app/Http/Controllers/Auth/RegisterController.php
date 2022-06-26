@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
+use Illuminate\Support\Str;
+use Root\SchemaRegistry\SchemaValidator;
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Services\ProduceEvent\Producer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use DB;
 
 class RegisterController extends Controller
 {
@@ -70,22 +73,27 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        DB::beginTransaction();
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'role' => 'employee',
+            'role_id' => Role::defaultRole()->id,
+            'public_id' => (string) Str::uuid(),
             'password' => Hash::make($data['password']),
         ]);
     
         $event = [
-            'public_id' => $user->id,
-            'role' => $user->role,
-            'name' => $user->name,
-            'email' => $user->email
+            'data' => (object) [
+                'public_id' => $user->public_id,
+                'role' => 'admin', 
+                'name' => $user->name,
+                'email' => $user->email
+            ]
         ];
 
-        if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountCreated')) {
+        if (SchemaValidator::check($event, 'Auth', 'AccountCreated')) {
             $this->producer->makeEvent('AccountsStream', 'Created', $event);    
+            DB::commit();
         } else {
             $this->throwEventException('AccountCreated');
         }

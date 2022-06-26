@@ -11,7 +11,7 @@ class ProducerEvent extends ServiceProvider
 {
     public function register()
     {
-        $config_provider = config('app.producer_event', RabbitMQProducer::class);
+        $config_provider = config('app.producer_event', LogProducer::class);
         $this->app->singleton(Producer::class, function ($app) use ($config_provider) {
             return new $config_provider();
         });

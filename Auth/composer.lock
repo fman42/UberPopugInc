@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "899df2ff1c4d7e530a2f69d4aa78111c",
+    "content-hash": "2fd79c9eca4d22de2868b19f82726ecc",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3521,6 +3521,33 @@
                 }
             ],
             "time": "2021-09-25T23:10:38+00:00"
+        },
+        {
+            "name": "root/schema-registry",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../SchemaRegistry",
+                "reference": "74434571763c319ed3d344c4974c4af7936e94d1"
+            },
+            "require": {
+                "justinrainbow/json-schema": "^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Root\\SchemaRegistry\\": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "fman42",
+                    "email": "igrok5554545@gmail.com"
+                }
+            ],
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -8709,7 +8736,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "root/schema-registry": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

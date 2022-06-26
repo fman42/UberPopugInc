@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\SchemaRegistry\ValidatorSchemaRegistry;
+use Root\SchemaRegistry\SchemaValidator;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\ProduceEvent\Producer;
@@ -42,12 +42,14 @@ class HomeController extends Controller
 
     public function deleteUser(Request $request)
     {
-        $user = User::find($request->user_id);
+        $user = User::findOrFail($request->user_id);
         $event = [
-            'public_user_id' => $user->id
+            'data' => (object) [
+                'public_id' => $user->public_id
+            ]
         ];
 
-        if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountDeleted')) {
+        if (SchemaValidator::check($event, 'Auth', 'AccountDeleted')) {
             $this->producer->makeEvent('AccountsStream', 'Deleted', $event);
             $user->delete();
         } else {
@@ -69,7 +71,7 @@ class HomeController extends Controller
             'email' => $user->email
         ];
 
-        if (ValidatorSchemaRegistry::check($event, 'Auth', 'AccountUpdated')) {
+        if (SchemaValidator::check($event, 'Auth', 'AccountUpdated')) {
             $this->producer->makeEvent('AccountsStream', 'Updated', $event);
             $user->save();
         } else {
